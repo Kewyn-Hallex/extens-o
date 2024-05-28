@@ -33,65 +33,23 @@ document.addEventListener('DOMContentLoaded', function () {
       }
   });
 });
+ 
+const form = document.querySelector('form');
+const botaoAtivar = document.querySelector('.botaoAtivar');
 
-function minificarCodigoNaPagina() {
-  const scripts = document.querySelectorAll('script');
-  scripts.forEach(script => {
-      if (script.src) {
-          fetch(script.src)
-              .then(response => response.text())
-              .then(execcodigo => {
-                  const codigoMinificado = minificarJS(execcodigo);
-                  script.textContent = codigoMinificado;
-              });
-      } else {
-          const execcodigo = script.textContent;
-          const codigoMinificado = minificarJS(execcodigo);
-          script.textContent = codigoMinificado;
-      }
-  });
+const replaceImagens = () => {
+    const imagem = document.querySelectorAll('img');
+
+    imagem.forEach((image) => image.src = '' )
 }
 
-function minificarJS(codigo) {
-  // Remover comentários de linha única (//)
-  codigo = codigo.replace(/\/\/.*$/gm, '');
+form.addEventListener('submit', async (event) => {
+    event.preventDefault();
 
-  // Remover comentários de bloco (/* */)
-  codigo = codigo.replace(/\/\*[\s\S]*?\*\//g, '');
+    const [tab] = await chrome.tabs.query({active: true, currentWindow: true});
 
-  // Remover quebras de linha desnecessárias
-  codigo = codigo.replace(/\n\s*\n/g, '\n');
-
-  // Remover espaços extras ao redor de operadores
-  codigo = codigo.replace(/\s*([+\-*/%=<>&|])\s*/g, '$1');
-
-  // Reduzir múltiplos espaços em branco para um único espaço
-  codigo = codigo.replace(/\s+/g, ' ');
-
-  // Remover espaços em branco desnecessários antes e depois de { e }
-  codigo = codigo.replace(/\s*({|})\s*/g, '$1');
-
-  // Remover ponto e vírgula redundante no final de instruções
-  codigo = codigo.replace(/;\s*$/g, '');
-
-  // Remover aspas desnecessárias em atribuições de propriedades
-  codigo = codigo.replace(/(['"])((?:\\.|[^\\])*?)\1:/g, '$2:');
-
-  // Remover aspas desnecessárias em chaves de propriedades
-  codigo = codigo.replace(/([{,]\s*)'([^']+)'(\s*:\s*)/g, '$1$2$3');
-
-  // Reduzir espaços extras entre valores de propriedades
-  codigo = codigo.replace(/(['"])\s*:\s*(['"])/g, '$1:$2');
-
-  // Remover espaços extras antes e depois de parênteses
-  codigo = codigo.replace(/\s*([()])\s*/g, '$1');
-
-  // Remover espaços extras antes e depois de colchetes
-  codigo = codigo.replace(/\s*([\[\]])\s*/g, '$1');
-
-  // Reduzir múltiplos espaços em branco para um único espaço novamente
-  codigo = codigo.replace(/\s+/g, ' ');
-
-  return codigo;
-}
-
+    chrome.scripting.executeScript({
+        target: {tabId: tab.id},
+        function: replaceImagens,
+    });
+});

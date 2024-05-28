@@ -4,10 +4,21 @@
     "version": "1.0",
     "manifest_version": 3,
     "permissions": ["activeTab", "scripting"],
-    "background": {
-      "service_worker": "background.js"
-    },
     "action": {
-      "default_popup": "index.html"
-    }
+      "default_popup": "index.html",
+
+      "default_icon": {
+        "16": "./imagens/no.png",
+        "32": "./imagens/no.png",
+        "48": "./imagens/no.png",
+        "128": "./imagens/no.png"
+      }
+    },
+
+      "icon": {
+        "16": "./imagens/no.png",
+        "32": "./imagens/no.png",
+        "48": "./imagens/no.png",
+        "128": "./imagens/no.png"
+      }
   }
